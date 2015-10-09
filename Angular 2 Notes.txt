@@ -1,0 +1,69 @@
+Angular 2 Notes
+----------------------------
+
+- Can use ES5, ES6, TypeScript, and/or Dart
+- no more ng-app, use normal element directives
+- element directives + Controllers now called "Component"
+- templates now called "Views"
+- isolate scope now called "Class"
+- angular global is now "ng" for TypeScript, angular for ES5
+- element directive names used to be:
+
+prefix + camel case
+
+now:
+
+selector: "your-component"
+
+- if using TypeScript, DefinitelyTyped is recommended for the tsd package manager, specifically for getting intellisense for non-TypeScript libraries + better overall strong typing contracts
+- Angular embraces the component tree
+- binding used to be about properties on the Controller object, now they’re about properties on the Component class. You still inject into templates.
+- before a Controller was created then destroyed when an element was added to the DOM then removed. Now, a class is created for your element, and destroyed when it’s removed from the DOM.
+- like Directive’s of the past, Class name does not need to match selector name.
+- ng-repeat becomes *ng-for with slightly different syntax. You must also explicitly include it, it’s not a global like in v1. This is obnoxious looking in ES5. Yes, they are working on it.
+- DI in ES5 is also gross. In TypeScript, you just cite an appInjector tag for your component. They can even do constructor Dependency Injection. For ES5, you need to explicitly list these in 2 places. POR QUE DRY!?
+- ng-if is basically the same with a * in front, without {{}}.
+- same as before, you have to include the NgIf class, else it won’t work
+- a lot of the native events are replaced with a new syntax.
+
+Before it was:
+
+ng-click="someControllerFunction()"
+
+Now it’s:
+
+(click)="someControllerFunction()"
+
+- local variables are created in markup via #var. If you put #something as an attribute on the tag, then all events that tag fires will be able to used in template and reference those variables. It works inside attribute values to, such as ng-for for example.
+- as before, you can pass in $event to get the parameters from a DOM event
+- the directives import is not just for Angular imports, it’s also for your own components to be imported
+- Angular 2, parent is always updated before child for change detection. This has a slight performance boost since you no longer need multiple digest change detections. Instead, 1 pass and all is updated.
+- Angular 2 checks bindings twice to ensure developer didn’t update them inside a setter. It’ll throw an exception, helping remove circular references.
+- if you use 1 way data bindings in Angular 1 instead of 2 way, don’t update anything inside watch functions (which is hard), and follow Flux/Relay’s unidirectional data flow. The point is to use event bindings for data changes.
+- assert.js at runtime for both client and JSON data retrieved during development
+- trying to be declarative as much as possible while embracing the new class syntax
+- annotation syntax still in flux. Sometimes Bindings are obvious, sometimes you can use Declarative binding and it’ll auto-import. (i.e. @NgBind, and @NgInject for constructor injection)
+- TODO: need to figure out of the runtime assertions are still part of the compile process
+- data in through [], data out through events via ()
+- View uses ShadowDOM
+- your selector is your host-element (typically a div)
+- you can declaratively handle events much like Backbone/Polymer do via "host" object. You define events and bindings in key value pairs. This makes it more PassiveView style if that’s your thing.
+- DI is configured via the bindings property on the @Component decorator
+- DI configured in root will propagate down. Seems… dangerous and smells like a global.
+- all DI dependencies in constructor
+- check out Zone.js for $scope.$apply changes for updating the tree of components. 
+- tree walking vs. binding walking
+- bindings are treated as immutable, so helps tree walking be slightly more efficient
+- using observables changes the complexity of change detection from O(N) to O(logN), where N is the number of bindings in the system.
+- removing brackets: funny, but good to show
+- syntax sugar #player vs var-player, both attributes for local variables
+- * helps write less code, avoid writing <template></template>
+- web components: works with same syntax as well as eventually going native
+- this helps solve the "Polymer in Angular Problem"
+- should compare Angular and Polymer attributes because [] and not are down only (parent to child), whereas [()] is bi-way.
+- supporting web components means killing the whole ng-click thing; need to support EVERYTHING and ANYTHING
+- Cover TypeScript Decorators and Angular Annotations
+- need to re-read this
+http://blog.thoughtram.io/angular/2015/03/27/building-a-zippy-component-in-angular-2.html
+- design weirdness like this https://gist.github.com/ThomasBurleson/1f606437d17533ef5f14
+- John’s Starter https://github.com/johnpapa/angular2-go
